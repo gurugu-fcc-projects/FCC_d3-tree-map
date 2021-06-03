@@ -12,6 +12,12 @@ const svg = d3
   .attr("width", width)
   .attr("height", height);
 
+//--> Add description
+d3.select("header")
+  .append("h4")
+  .text("Top 100 Best-Selling Movies")
+  .attr("id", "description");
+
 //--> Load & display data
 d3.json(url).then(data => {
   const hierarchy = d3
@@ -29,6 +35,7 @@ d3.json(url).then(data => {
     .domain(categories)
     .range(d3.schemeCategory10);
 
+  //--> Show rectangles and color them accordingly
   svg
     .selectAll("rect")
     .data(root.leaves())
@@ -39,4 +46,6 @@ d3.json(url).then(data => {
     .attr("width", d => d.x1 - d.x0)
     .attr("height", d => d.y1 - d.y0)
     .attr("fill", d => colorScale(d.data.category));
+
+  //--> Add text
 });
