@@ -23,6 +23,12 @@ d3.json(url).then(data => {
 
   const root = treemap(hierarchy);
 
+  const categories = data.children.map(d => d.name);
+  const colorScale = d3
+    .scaleOrdinal()
+    .domain(categories)
+    .range(d3.schemeCategory10);
+
   svg
     .selectAll("rect")
     .data(root.leaves())
@@ -31,5 +37,6 @@ d3.json(url).then(data => {
     .attr("x", d => d.x0)
     .attr("y", d => d.y0)
     .attr("width", d => d.x1 - d.x0)
-    .attr("height", d => d.y1 - d.y0);
+    .attr("height", d => d.y1 - d.y0)
+    .attr("fill", d => colorScale(d.data.category));
 });
