@@ -3,15 +3,33 @@ const url =
   "https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json";
 
 //--> Constants
-const width = 1000;
-const height = 800;
+const width = 1100;
+const height = 720;
 
 const svg = d3
   .select(".content")
   .append("svg")
-  .attr("viewbox", [0, 0, width, height]);
+  .attr("width", width)
+  .attr("height", height);
 
 //--> Load & display data
 d3.json(url).then(data => {
-  console.log(data);
+  const hierarchy = d3
+    .hierarchy(data)
+    .sum(d => d.value)
+    .sort((a, b) => b.value - a.value);
+
+  const treemap = d3.treemap().size([width, height]).padding(1);
+
+  const root = treemap(hierarchy);
+
+  svg
+    .selectAll("rect")
+    .data(root.leaves())
+    .enter()
+    .append("rect")
+    .attr("x", d => d.x0)
+    .attr("y", d => d.y0)
+    .attr("width", d => d.x1 - d.x0)
+    .attr("height", d => d.y1 - d.y0);
 });
