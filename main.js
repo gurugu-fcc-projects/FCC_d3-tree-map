@@ -45,7 +45,11 @@ d3.json(url).then(data => {
     .attr("y", d => d.y0)
     .attr("width", d => d.x1 - d.x0)
     .attr("height", d => d.y1 - d.y0)
-    .attr("fill", d => colorScale(d.data.category));
+    .attr("fill", d => colorScale(d.data.category))
+    .attr("class", "tile")
+    .attr("data-name", d => d.data.name)
+    .attr("data-category", d => d.data.category)
+    .attr("data-value", d => d.data.value);
 
   //--> Add text
 });
