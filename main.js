@@ -29,6 +29,7 @@ d3.json(url).then(data => {
 
   const root = treemap(hierarchy);
 
+  //--> Color scale
   const categories = data.children.map(d => d.name);
   const colorScale = d3
     .scaleOrdinal()
@@ -36,29 +37,32 @@ d3.json(url).then(data => {
     .range(d3.schemeCategory10);
 
   //--> Show rectangles and color them accordingly
-  svg
-    .selectAll("rect")
+  const tile = svg
+    .selectAll("g")
     .data(root.leaves())
     .enter()
+    .append("g")
+    .attr("transform", d => `translate(${d.x0}, ${d.y0})`);
+
+  tile
     .append("rect")
-    .attr("x", d => d.x0)
-    .attr("y", d => d.y0)
+    .classed("tile", true)
     .attr("width", d => d.x1 - d.x0)
     .attr("height", d => d.y1 - d.y0)
     .attr("fill", d => colorScale(d.data.category))
-    .attr("class", "tile")
     .attr("data-name", d => d.data.name)
     .attr("data-category", d => d.data.category)
     .attr("data-value", d => d.data.value);
 
   //--> Add movie titles
-  svg
-    .selectAll("text")
-    .data(root.leaves())
-    .enter()
+  tile
     .append("text")
     .classed("movie-title", true)
-    .attr("x", d => d.x0 + 5)
-    .attr("y", d => d.y0 + 15)
-    .text(d => d.data.name);
+    .selectAll("tspan")
+    .data(d => d.data.name.split(/(?=[A-Z][^A-Z])/g))
+    .enter()
+    .append("tspan")
+    .attr("x", 5)
+    .attr("y", (d, i) => 15 + 10 * i)
+    .text(d => d);
 });
