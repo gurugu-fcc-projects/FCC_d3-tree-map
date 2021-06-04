@@ -16,6 +16,8 @@ const svg = d3
 const tooltip = d3.select(".content").append("div").attr("id", "tooltip");
 
 //--> Helper functions
+const formatSales = d3.format(",d");
+
 const wrapText = selection => {
   selection.each(function () {
     const node = d3.select(this);
@@ -56,15 +58,20 @@ const wrapText = selection => {
 
 function showTooltip(e) {
   const genre = this.getAttribute("data-category");
-  const movieTitle = this.getAttribute("data-name");
-  const salesValue = this.getAttribute("data-value");
-  console.log(genre);
+  const title = this.getAttribute("data-name");
+  const sales = this.getAttribute("data-value");
+
+  const titleLine = `<h3>${title}</h3>`;
+  const genreLine = `<p>${genre}</p>`;
+  const salesLine = `<p>$${formatSales(sales)}</p>`;
+  const content = `<div>${titleLine}${genreLine}${salesLine}</div>`;
+
   tooltip
     .style("opacity", 0.9)
     .style("left", `${e.clientX + 10}px`)
     .style("top", `${e.clientY + 5}px`)
-    .attr("data-value", salesValue)
-    .html(`${movieTitle}: ${salesValue}`);
+    .attr("data-value", sales)
+    .html(content);
 }
 
 //--> Add description
@@ -93,31 +100,32 @@ d3.json(url).then(data => {
 
   //--> Show rectangles and color them accordingly
   const tile = svg
-    .selectAll("g")
+    .selectAll("rect")
     .data(root.leaves())
     .enter()
-    .append("g")
-    .attr("transform", d => `translate(${d.x0}, ${d.y0})`)
-    .on("mouseover", showTooltip);
-
-  tile
     .append("rect")
     .classed("tile", true)
+    .attr("x", d => d.x0)
+    .attr("y", d => d.y0)
     .attr("width", d => d.x1 - d.x0)
     .attr("height", d => d.y1 - d.y0)
     .attr("fill", d => colorScale(d.data.category))
     .attr("data-name", d => d.data.name)
     .attr("data-category", d => d.data.category)
-    .attr("data-value", d => d.data.value);
+    .attr("data-value", d => d.data.value)
+    .on("mouseover", showTooltip);
 
   //--> Add movie titles
-  tile
+  svg
+    .selectAll("text")
+    .data(root.leaves())
+    .enter()
     .append("text")
     .classed("movie-title", true)
     .attr("data-width", d => d.x1 - d.x0 - 5)
     .attr("font-size", `${fontSize}px`)
-    .attr("x", 5)
-    .attr("y", fontSize)
+    .attr("x", d => d.x0 + 5)
+    .attr("y", d => d.y0 + 15)
     .text(d => d.data.name)
     .call(wrapText);
 });
