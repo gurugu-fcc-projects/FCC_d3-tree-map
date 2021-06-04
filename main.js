@@ -5,7 +5,7 @@ const url =
 //--> Constants
 const width = 1000;
 const height = 660;
-const fontSize = 12;
+const fontSize = 11;
 
 const svg = d3
   .select(".content")
