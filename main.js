@@ -3,8 +3,8 @@ const url =
   "https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json";
 
 //--> Constants
-const width = 1100;
-const height = 720;
+const width = 1000;
+const height = 620;
 
 const svg = d3
   .select(".content")
@@ -51,5 +51,5 @@ d3.json(url).then(data => {
     .attr("data-category", d => d.data.category)
     .attr("data-value", d => d.data.value);
 
-  //--> Add text
+  //--> Add movie titles
 });
