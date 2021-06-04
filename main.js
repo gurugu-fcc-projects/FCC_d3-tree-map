@@ -52,4 +52,13 @@ d3.json(url).then(data => {
     .attr("data-value", d => d.data.value);
 
   //--> Add movie titles
+  svg
+    .selectAll("text")
+    .data(root.leaves())
+    .enter()
+    .append("text")
+    .classed("movie-title", true)
+    .attr("x", d => d.x0 + 5)
+    .attr("y", d => d.y0 + 15)
+    .text(d => d.data.name);
 });

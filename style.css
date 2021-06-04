@@ -77,3 +77,8 @@ header {
   pointer-events: none;
   opacity: 0;
 }
+
+.movie-title {
+  font-size: 0.7rem;
+  fill: var(--text-color-2);
+}
