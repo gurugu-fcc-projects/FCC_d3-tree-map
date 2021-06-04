@@ -4,13 +4,53 @@ const url =
 
 //--> Constants
 const width = 1000;
-const height = 620;
+const height = 660;
+const fontSize = 12;
 
 const svg = d3
   .select(".content")
   .append("svg")
   .attr("width", width)
   .attr("height", height);
+
+//--> Wrap Text fn
+const wrapText = selection => {
+  selection.each(function () {
+    const node = d3.select(this);
+    const rectWidth = +node.attr("data-width");
+    let word;
+    const words = node.text().split(" ").reverse();
+    let line = [];
+    const x = node.attr("x");
+    const y = node.attr("y");
+    let tspan = node.text("").append("tspan").attr("x", x).attr("y", y);
+    let lineNumber = 0;
+    while (words.length > 1) {
+      word = words.pop();
+      line.push(word);
+      tspan.text(line.join(" "));
+      const tspanLength = tspan.node().getComputedTextLength();
+      if (tspanLength > rectWidth && line.length !== 1) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = addTspan(word);
+      }
+    }
+
+    addTspan(words.pop());
+
+    function addTspan(text) {
+      lineNumber += 1;
+      return node
+        .append("tspan")
+        .attr("x", x)
+        .attr("y", y)
+        .attr("dy", `${lineNumber * fontSize}px`)
+        .text(text);
+    }
+  });
+};
 
 //--> Add description
 d3.select("header")
@@ -58,11 +98,10 @@ d3.json(url).then(data => {
   tile
     .append("text")
     .classed("movie-title", true)
-    .selectAll("tspan")
-    .data(d => d.data.name.split(/(?=[A-Z][^A-Z])/g))
-    .enter()
-    .append("tspan")
+    .attr("data-width", d => d.x1 - d.x0 - 5)
+    .attr("font-size", `${fontSize}px`)
     .attr("x", 5)
-    .attr("y", (d, i) => 15 + 10 * i)
-    .text(d => d);
+    .attr("y", fontSize)
+    .text(d => d.data.name)
+    .call(wrapText);
 });
