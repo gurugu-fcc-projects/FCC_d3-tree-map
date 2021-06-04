@@ -25,7 +25,7 @@ const wrapText = selection => {
     const y = node.attr("y");
     let tspan = node.text("").append("tspan").attr("x", x).attr("y", y);
     let lineNumber = 0;
-    while (words.length > 1) {
+    while (words.length > 0) {
       word = words.pop();
       line.push(word);
       tspan.text(line.join(" "));
