@@ -13,7 +13,9 @@ const svg = d3
   .attr("width", width)
   .attr("height", height);
 
-//--> Wrap Text fn
+const tooltip = d3.select(".content").append("div").attr("id", "tooltip");
+
+//--> Helper functions
 const wrapText = selection => {
   selection.each(function () {
     const node = d3.select(this);
@@ -52,6 +54,19 @@ const wrapText = selection => {
   });
 };
 
+function showTooltip(e) {
+  const genre = this.getAttribute("data-category");
+  const movieTitle = this.getAttribute("data-name");
+  const salesValue = this.getAttribute("data-value");
+  console.log(genre);
+  tooltip
+    .style("opacity", 0.9)
+    .style("left", `${e.clientX + 10}px`)
+    .style("top", `${e.clientY + 5}px`)
+    .attr("data-value", salesValue)
+    .html(`${movieTitle}: ${salesValue}`);
+}
+
 //--> Add description
 d3.select("header")
   .append("h4")
@@ -82,7 +97,8 @@ d3.json(url).then(data => {
     .data(root.leaves())
     .enter()
     .append("g")
-    .attr("transform", d => `translate(${d.x0}, ${d.y0})`);
+    .attr("transform", d => `translate(${d.x0}, ${d.y0})`)
+    .on("mouseover", showTooltip);
 
   tile
     .append("rect")
