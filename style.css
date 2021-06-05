@@ -83,6 +83,10 @@ header {
   pointer-events: none;
 }
 
+.legend-item-group {
+  cursor: pointer;
+}
+
 .legend-item-text {
   fill: var(--text-color-2);
 }

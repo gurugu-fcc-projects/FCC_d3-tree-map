@@ -86,6 +86,25 @@ const hideTooltip = e => {
   tooltip.style("opacity", 0);
 };
 
+function showLegendTooltip(e) {
+  const total = this.getAttribute("data-total");
+  const genre = this.getAttribute("data-genre");
+
+  const titleLine = `<h3>Total Sales for ${genre}</h3>`;
+  const salesLine = `<p>$${formatSales(total)}</p>`;
+  const content = titleLine + salesLine;
+
+  tooltip
+    .style("opacity", 0.9)
+    .style("left", `${e.clientX + 10}px`)
+    .style("top", `${e.clientY + 5}px`)
+    .attr("data-total", total)
+    .html(content);
+}
+
+const calculateTotalSales = category => {
+  return category.children.reduce((total, movie) => total + +movie.value, 0);
+};
 //--> Add description
 d3.select("header")
   .append("h4")
@@ -104,10 +123,14 @@ d3.json(url).then(data => {
   const root = treemap(hierarchy);
 
   //--> Color scale
-  const categories = data.children.map(d => d.name);
+  const categories = data.children.map(d => ({
+    name: d.name,
+    total: calculateTotalSales(d),
+  }));
+
   const colorScale = d3
     .scaleOrdinal()
-    .domain(categories)
+    .domain(categories, d => d.name)
     .range(d3.schemeCategory10);
 
   //--> Show rectangles and color them accordingly
@@ -145,18 +168,23 @@ d3.json(url).then(data => {
   //--> Add legend
   const legendGroups = legend
     .selectAll("g")
-    .data(categories)
+    .data(categories, d => d.name)
     .enter()
     .append("g")
-    .attr("transform", (d, i) => `translate(0, ${i * legendItemWidth * 2})`);
+    .attr("transform", (d, i) => `translate(0, ${i * legendItemWidth * 2})`)
+    .attr("data-total", d => d.total)
+    .attr("data-genre", d => d.name)
+    .classed("legend-item-group", true)
+    .on("mouseover", showLegendTooltip)
+    .on("mouseout", hideTooltip);
 
   legendGroups
     .append("rect")
     .attr("x", 0)
     .attr("width", legendItemWidth)
     .attr("height", legendItemWidth)
-    .attr("fill", d => colorScale(d))
-    .attr("data-cat", d => d)
+    .attr("fill", d => colorScale(d.name))
+    .attr("data-cat", d => d.name)
     .classed("legend-item", true);
 
   legendGroups
@@ -164,6 +192,6 @@ d3.json(url).then(data => {
     .attr("x", 30)
     .attr("y", 12)
     .attr("alignment-baseline", "middle")
-    .text(d => d)
+    .text(d => d.name)
     .classed("legend-item-text", true);
 });
