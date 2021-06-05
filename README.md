@@ -5,7 +5,7 @@ See project requirements at [this freecodecamp page](https://www.freecodecamp.or
 
 ## Demo
 
-![](https://github.com/gurugu-fcc-projects/FCC__d3-tree-map/blob/master/fcc__d3_tree-map.gif)
+![](https://github.com/gurugu-fcc-projects/FCC_d3-tree-map/blob/master/fcc__d3_tree-map.gif)
 
 ## Features
 
