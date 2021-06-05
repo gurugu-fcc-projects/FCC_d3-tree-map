@@ -74,6 +74,10 @@ function showTooltip(e) {
     .html(content);
 }
 
+const hideTooltip = e => {
+  tooltip.style("opacity", 0);
+};
+
 //--> Add description
 d3.select("header")
   .append("h4")
@@ -99,21 +103,22 @@ d3.json(url).then(data => {
     .range(d3.schemeCategory10);
 
   //--> Show rectangles and color them accordingly
-  const tile = svg
+  svg
     .selectAll("rect")
     .data(root.leaves())
     .enter()
     .append("rect")
-    .classed("tile", true)
     .attr("x", d => d.x0)
     .attr("y", d => d.y0)
     .attr("width", d => d.x1 - d.x0)
     .attr("height", d => d.y1 - d.y0)
     .attr("fill", d => colorScale(d.data.category))
+    .attr("class", "tile")
     .attr("data-name", d => d.data.name)
     .attr("data-category", d => d.data.category)
     .attr("data-value", d => d.data.value)
-    .on("mouseover", showTooltip);
+    .on("mouseover", showTooltip)
+    .on("mouseout", hideTooltip);
 
   //--> Add movie titles
   svg
