@@ -7,16 +7,21 @@ const width = 1100;
 const height = 660;
 const margin = { top: 0, right: 0, bottom: 0, left: 200 };
 const fontSize = 11;
+const legendItemWidth = 20;
 
 const svg = d3
   .select(".content")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
+  .attr("height", height + margin.top + margin.bottom);
+
+const graph = svg
   .append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 const tooltip = d3.select(".content").append("div").attr("id", "tooltip");
+
+const legend = svg.append("g").attr("id", "legend");
 
 //--> Helper functions
 const formatSales = d3.format(",d");
@@ -106,7 +111,7 @@ d3.json(url).then(data => {
     .range(d3.schemeCategory10);
 
   //--> Show rectangles and color them accordingly
-  svg
+  graph
     .selectAll("rect")
     .data(root.leaves())
     .enter()
@@ -124,7 +129,7 @@ d3.json(url).then(data => {
     .on("mouseout", hideTooltip);
 
   //--> Add movie titles
-  svg
+  graph
     .selectAll("text")
     .data(root.leaves())
     .enter()
@@ -138,4 +143,26 @@ d3.json(url).then(data => {
     .call(wrapText);
 
   //--> Add legend
+  legend
+    .selectAll("rect")
+    .data(categories)
+    .enter()
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", (d, i) => i * legendItemWidth * 2)
+    .attr("width", legendItemWidth)
+    .attr("height", legendItemWidth)
+    .attr("fill", d => colorScale(d))
+    .classed("legend-item", true);
+
+  legend
+    .selectAll("text")
+    .data(categories)
+    .enter()
+    .append("text")
+    .attr("x", 30)
+    .attr("y", (d, i) => i * legendItemWidth * 2 + 12)
+    .text(d => d)
+    .attr("alignment-baseline", "middle")
+    .classed("legend-item-text", true);
 });

@@ -82,3 +82,7 @@ header {
   fill: var(--text-color);
   pointer-events: none;
 }
+
+.legend-item-text {
+  fill: var(--text-color-2);
+}
