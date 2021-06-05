@@ -3,15 +3,18 @@ const url =
   "https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json";
 
 //--> Constants
-const width = 1000;
+const width = 1100;
 const height = 660;
+const margin = { top: 0, right: 0, bottom: 0, left: 200 };
 const fontSize = 11;
 
 const svg = d3
   .select(".content")
   .append("svg")
-  .attr("width", width)
-  .attr("height", height);
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 const tooltip = d3.select(".content").append("div").attr("id", "tooltip");
 
@@ -133,4 +136,6 @@ d3.json(url).then(data => {
     .attr("y", d => d.y0 + 15)
     .text(d => d.data.name)
     .call(wrapText);
+
+  //--> Add legend
 });
