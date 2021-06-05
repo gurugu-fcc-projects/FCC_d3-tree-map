@@ -143,26 +143,27 @@ d3.json(url).then(data => {
     .call(wrapText);
 
   //--> Add legend
-  legend
-    .selectAll("rect")
+  const legendGroups = legend
+    .selectAll("g")
     .data(categories)
     .enter()
+    .append("g")
+    .attr("transform", (d, i) => `translate(0, ${i * legendItemWidth * 2})`);
+
+  legendGroups
     .append("rect")
     .attr("x", 0)
-    .attr("y", (d, i) => i * legendItemWidth * 2)
     .attr("width", legendItemWidth)
     .attr("height", legendItemWidth)
     .attr("fill", d => colorScale(d))
+    .attr("data-cat", d => d)
     .classed("legend-item", true);
 
-  legend
-    .selectAll("text")
-    .data(categories)
-    .enter()
+  legendGroups
     .append("text")
     .attr("x", 30)
-    .attr("y", (d, i) => i * legendItemWidth * 2 + 12)
-    .text(d => d)
+    .attr("y", 12)
     .attr("alignment-baseline", "middle")
+    .text(d => d)
     .classed("legend-item-text", true);
 });
