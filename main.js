@@ -5,7 +5,7 @@ const url =
 //--> Constants
 const width = 1100;
 const height = 660;
-const margin = { top: 0, right: 0, bottom: 0, left: 200 };
+const margin = { top: 0, right: 0, bottom: 0, left: 150 };
 const fontSize = 11;
 const legendItemWidth = 20;
 
