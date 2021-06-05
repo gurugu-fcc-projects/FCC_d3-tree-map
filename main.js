@@ -105,6 +105,7 @@ function showLegendTooltip(e) {
 const calculateTotalSales = category => {
   return category.children.reduce((total, movie) => total + +movie.value, 0);
 };
+
 //--> Add description
 d3.select("header")
   .append("h4")

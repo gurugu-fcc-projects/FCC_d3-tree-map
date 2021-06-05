@@ -84,6 +84,7 @@ header {
 }
 
 .legend-item-group {
+  pointer-events: bounding-box;
   cursor: pointer;
 }
 
